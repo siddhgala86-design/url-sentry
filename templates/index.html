@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>URL Sentry — Phishing URL Detector</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="grid-overlay"></div>
+
+<header class="topbar">
+  <div class="brand"><span class="brand-mark">◈</span>URL <span class="accent">Sentry</span></div>
+  <nav class="topnav"><a href="#scanner">Scanner</a><a href="#pipeline">How it works</a><a href="#history">Scan log</a></nav>
+</header>
+
+<main>
+  <section class="hero" id="scanner">
+    <div class="hero-text">
+      <p class="eyebrow">SYBSCIT · Cybersecurity Mini Project · Flask + Python</p>
+      <h1>Is that link<br><span class="accent">safe to open?</span></h1>
+      <p class="lede">Paste any link below. Five Python checks run against it — structure validation, suspicious domain rule, character anomaly detection, risk score, and a safe-browsing recommendation.</p>
+    </div>
+
+    <div class="scanner-panel">
+      <div class="panel-head"><span class="dot red"></span><span class="dot amber"></span><span class="dot green"></span><span class="panel-title">scan_engine</span></div>
+
+      <form id="scan-form" class="scan-form">
+        <input type="text" id="url-input" placeholder="paste-a-suspicious-link.com/verify" required autocomplete="off">
+        <button type="submit" id="scan-btn">Scan URL</button>
+      </form>
+
+      <div class="radar" id="radar" hidden>
+        <div class="radar-ring"></div><div class="radar-ring r2"></div><div class="radar-sweep"></div>
+        <p class="radar-label">running checks…</p>
+      </div>
+
+      <div class="verdict" id="verdict" hidden>
+        <div class="verdict-badge" id="verdict-badge">
+          <span id="verdict-icon">✔</span><span id="verdict-text">SAFE</span>
+        </div>
+        <p class="verdict-recommendation" id="verdict-recommendation"></p>
+        <div class="risk-meter"><div class="risk-meter-fill" id="risk-fill"></div></div>
+        <p class="risk-label">Risk score: <span id="risk-score-text">0</span> / 100</p>
+        <ul class="checklist" id="checklist"></ul>
+      </div>
+
+      <p class="scanner-note">Runs on a real Flask/Python backend — every scan is logged to scan_history.txt.</p>
+    </div>
+  </section>
+
+  <section class="pipeline" id="pipeline">
+    <p class="eyebrow center">The decision pipeline</p>
+    <h2 class="section-title center">Five checks, one recommendation</h2>
+    <ol class="pipeline-steps">
+      <li><span class="step-no">01</span><h3>Structure Validation</h3><p>Regex + URL parsing confirm it's a well-formed address.</p></li>
+      <li><span class="step-no">02</span><h3>Suspicious Domain Rule</h3><p>Flags risky TLDs, raw IPs, and brand look-alikes.</p></li>
+      <li><span class="step-no">03</span><h3>Character Anomaly Detection</h3><p>Catches hidden '@' tricks, digit floods, bait words.</p></li>
+      <li><span class="step-no">04</span><h3>Risk Score</h3><p>Every failed rule adds weighted points, out of 100.</p></li>
+      <li><span class="step-no">05</span><h3>Safe Browsing Report</h3><p>Score becomes a verdict + plain-language recommendation.</p></li>
+    </ol>
+  </section>
+
+  <section class="history" id="history">
+    <p class="eyebrow center">Safe Browsing Report</p>
+    <h2 class="section-title center">Recent scans</h2>
+    <div class="history-list">
+      {% if history %}
+        {% for item in history %}
+        <div class="history-row status-{{ item.verdict|lower }}">
+          <span class="hist-verdict">{{ item.verdict }}</span>
+          <span class="hist-url">{{ item.url }}</span>
+          <span class="hist-score">{{ item.risk_score }}/100</span>
+          <span class="hist-time">{{ item.timestamp }}</span>
+        </div>
+        {% endfor %}
+      {% else %}
+        <p class="empty-state">No scans yet — run one above.</p>
+      {% endif %}
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">Python (Flask) · Regex · OOP · File handling — SYBSCIT NEP Syllabus, Unit I–IV</footer>
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
