@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+venv/
+.venv/
+logs/scan_history.txt
+.DS_Store
